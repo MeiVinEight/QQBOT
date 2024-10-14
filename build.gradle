@@ -1,0 +1,35 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
+
+plugins {
+	id 'java'
+	id 'org.jetbrains.kotlin.jvm' version '1.5.30'
+}
+
+group = "org.mve"
+version = "0.1.0"
+
+repositories {
+	mavenCentral()
+	maven { url 'https://mirrors.cloud.tencent.com/gradle/'}
+	maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
+	maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+	maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
+	maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+	maven { url 'https://maven.aliyun.com/repository/jcenter' }
+	maven { url 'https://maven.aliyun.com/repository/google' }
+	maven { url 'https://www.jitpack.io' }
+}
+
+// tasks.withType(KotlinJvmCompile.class) {
+// 	kotlinOptions.jvmTarget = "1.8"
+// }
+
+dependencies {
+	// 开发时使用 mirai-core-api，运行时提供 mirai-core
+
+	implementation("top.mrxiaom.mirai:overflow-core:1.0.0")
+	implementation("net.mamoe:mirai-core-api:2.16.0")
+	implementation 'com.github.MeiVinEight:ReflectionFX:-SNAPSHOT'
+
+	// 可以简单地只添加 api("net.mamoe:mirai-core:2.6.1")
+}
