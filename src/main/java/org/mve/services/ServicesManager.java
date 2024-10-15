@@ -2,7 +2,7 @@ package org.mve.services;
 
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.event.Event;
-import org.mve.acm.type.SearchingType;
+import org.mve.type.SearchingType;
 import org.mve.invoke.common.JavaVM;
 import top.mrxiaom.overflow.BotBuilder;
 

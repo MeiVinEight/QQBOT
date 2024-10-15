@@ -1,4 +1,4 @@
-package org.mve.acm.type;
+package org.mve.type;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
