@@ -30,6 +30,7 @@ dependencies {
 	implementation("top.mrxiaom.mirai:overflow-core:1.0.0")
 	implementation("net.mamoe:mirai-core-api:2.16.0")
 	implementation 'com.github.MeiVinEight:ReflectionFX:-SNAPSHOT'
+	implementation 'com.google.code.gson:gson:2.11.0'
 
 	// 可以简单地只添加 api("net.mamoe:mirai-core:2.6.1")
 }
