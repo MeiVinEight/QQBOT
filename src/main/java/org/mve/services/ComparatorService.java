@@ -1,4 +1,4 @@
-package org.mve.acm.services;
+package org.mve.services;
 
 import net.mamoe.mirai.event.AbstractEvent;
 

@@ -3,7 +3,7 @@ package org.mve.acm.services.codeforces;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.acm.controller.CodeforcesController;
-import org.mve.acm.services.Service;
+import org.mve.services.Service;
 
 import java.util.LinkedList;
 
