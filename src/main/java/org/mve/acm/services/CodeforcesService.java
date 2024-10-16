@@ -8,7 +8,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageContent;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.SingleMessage;
-import org.mve.acm.collect.CollectorArray;
+import org.mve.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
 import org.mve.mirai.Message;
 
