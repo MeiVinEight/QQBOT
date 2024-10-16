@@ -67,7 +67,7 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 					{
 						content = content.substring(service.name.length())
 							.stripLeading();
-						contentList.addFirst(new PlainText(content));
+						if (!content.isEmpty()) contentList.addFirst(new PlainText(content));
 						service.service(event, contentList);
 					}
 				}
