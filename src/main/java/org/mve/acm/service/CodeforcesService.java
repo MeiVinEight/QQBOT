@@ -5,11 +5,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.message.data.MessageContent;
+import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.SingleMessage;
+import org.mve.acm.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
+import org.mve.mirai.Message;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -31,9 +38,21 @@ public class CodeforcesService implements Consumer<GroupMessageEvent>
 	{
 		if (CodeforcesService.GROUPQQ.contains(event.getGroup().getId()))
 		{
-			if (event.getMessage().get(1).toString().startsWith(COMMAND_SYMBOL + COMMAND_PREFIX))
+
+			// Filter MessageContent
+			List<SingleMessage> contentList = event.getMessage()
+				.stream().filter(MessageContent.class::isInstance)
+				.collect(new CollectorArray<>(new LinkedList<>()));
+			System.out.println(contentList.getClass());
+
+			if (contentList.get(0).contentToString().startsWith(COMMAND_SYMBOL + COMMAND_PREFIX))
 			{
-				event.getSubject().sendMessage(event.getMessage().get(1).toString().substring(COMMAND_SYMBOL.length() + COMMAND_PREFIX.length()));
+				String content = contentList.remove(0).toString();
+				content = content.substring(COMMAND_SYMBOL.length() + COMMAND_PREFIX.length())
+					.stripLeading();
+				if (!content.isEmpty()) contentList.add(0, new PlainText(content));
+				// System.out.println(messageContent);
+				event.getSubject().sendMessage(Message.message(contentList));
 			}
 		}
 	}
