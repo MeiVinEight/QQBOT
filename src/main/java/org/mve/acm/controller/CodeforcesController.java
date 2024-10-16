@@ -11,6 +11,7 @@ import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.acm.services.ComparatorService;
 import org.mve.acm.services.Service;
 import org.mve.acm.services.codeforces.CodeforcesServiceContest;
+import org.mve.acm.services.codeforces.CodeforcesServiceCookie;
 import org.mve.acm.services.codeforces.CodeforcesServiceHelp;
 import org.mve.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
@@ -41,6 +42,7 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 	public static final String CMD_HELP_0 = "?";
 	public static final String CMD_HELP_1 = "help";
 	public static final String CMD_CONTEST = "contest";
+	public static final String CMD_COOKIE = "cookie";
 
 	@Override
 	public void accept(GroupMessageEvent event)
@@ -112,6 +114,7 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 		SERVICES.add(new CodeforcesServiceHelp(CMD_HELP_0));
 		SERVICES.add(new CodeforcesServiceHelp(CMD_HELP_1));
 		SERVICES.add(new CodeforcesServiceContest(CMD_CONTEST));
+		SERVICES.add(new CodeforcesServiceCookie(CMD_COOKIE));
 		SERVICES.sort(new ComparatorService<>());
 	}
 }
