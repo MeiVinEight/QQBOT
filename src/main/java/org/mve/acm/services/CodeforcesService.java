@@ -1,4 +1,4 @@
-package org.mve.acm.service;
+package org.mve.acm.services;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
