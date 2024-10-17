@@ -91,6 +91,15 @@ public class ServicesManager
 		}
 		MYSQL_USERNAME = mysqlUsername;
 		MYSQL_PASSWORD = mysqlPassword;
+		try
+		{
+			// TODO Use property
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		}
+		catch (ClassNotFoundException e)
+		{
+			BOT.getLogger().error(e);
+		}
 
 		Runtime.getRuntime().addShutdownHook(new Thread(ServicesManager.BOT::close));
 	}

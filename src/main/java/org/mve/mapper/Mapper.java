@@ -8,8 +8,6 @@ public interface Mapper<T>
 	public boolean insert(T o);
 	// Get an object by primary key
 	public T primary(T o);
-	// Select objects by given params
-	public List<T> select(T o);
 	// Update an object by primary key
 	public boolean update(T o);
 	// Delete an object by primary key
