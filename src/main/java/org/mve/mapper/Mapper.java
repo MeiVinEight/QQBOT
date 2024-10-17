@@ -1,7 +1,5 @@
 package org.mve.mapper;
 
-import java.util.List;
-
 public interface Mapper<T>
 {
 	// Insert a new object
