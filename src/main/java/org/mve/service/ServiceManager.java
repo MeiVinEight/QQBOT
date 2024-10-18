@@ -16,7 +16,7 @@ public class ServiceManager
 		this.services.sort(new ComparatorService<>());
 	}
 
-	public Service<Event> service(Class<? extends Event> type, String line)
+	public Service<Event> service(Event event, String line)
 	{
 		if (line == null) return null;
 
@@ -26,7 +26,7 @@ public class ServiceManager
 		{
 			Service<Event> service = this.services.get(i);
 			searching.reset().search(service.getClass());
-			if (line.startsWith(service.name) && type == searching.generic) return service;
+			if (line.startsWith(service.name) && searching.generic.isInstance(event)) return service;
 		}
 		return null;
 	}

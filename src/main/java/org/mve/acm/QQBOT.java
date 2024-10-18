@@ -1,14 +1,20 @@
 package org.mve.acm;
 
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.data.MessageContent;
+import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.acm.controller.CodeforcesController;
+import org.mve.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
+import org.mve.service.Service;
 import org.mve.service.ServiceManager;
 import org.mve.sql.Database;
 import top.mrxiaom.overflow.BotBuilder;
 
 import java.io.FileInputStream;
+import java.util.LinkedList;
 import java.util.Properties;
 import java.util.function.Consumer;
 
@@ -35,12 +41,22 @@ public class QQBOT implements Consumer<MessageEvent>
 
 	public QQBOT()
 	{
+		QQBOT.BOT.getEventChannel().subscribeAlways(MessageEvent.class, this);
 		this.service.service(new CodeforcesController());
 	}
 
 	@Override
 	public void accept(MessageEvent messageEvent)
 	{
+		LinkedList<SingleMessage> contestList = messageEvent.getMessage()
+			.stream()
+			.filter(MessageContent.class::isInstance)
+			.collect(new CollectorArray<>(new LinkedList<>()));
+
+		if (contestList.isEmpty()) return;
+
+		Service<Event> service = this.service.service(messageEvent, contestList.getFirst().toString());
+		if (service != null) service.subject(messageEvent, contestList);
 	}
 
 	static

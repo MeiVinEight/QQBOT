@@ -42,6 +42,9 @@ public class CodeforcesController extends Service<MessageEvent>
 	public CodeforcesController()
 	{
 		super(COMMAND_SYMBOL + COMMAND_PREFIX);
+		this.service.service(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_0));
+		this.service.service(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_1));
+		this.service.service(new CodeforcesServiceContest());
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public class CodeforcesController extends Service<MessageEvent>
 			event.getSubject().sendMessage("?");
 			return;
 		}
-		Service<Event> service = this.service.service(event.getClass(), contentList.get(0).toString());
+		Service<Event> service = this.service.service(event, contentList.get(0).toString());
 		if (service == null)
 		{
 			event.getSubject().sendMessage("?");

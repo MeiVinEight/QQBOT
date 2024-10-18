@@ -48,7 +48,7 @@ public class SearchingType
 		// Foreach interfaces
 		Type[] genericInterfaces = clazz.getGenericInterfaces();
 		genericInterfaces = Arrays.copyOf(genericInterfaces, genericInterfaces.length + 1);
-		genericInterfaces[genericInterfaces.length - 1] = clazz.getSuperclass();
+		genericInterfaces[genericInterfaces.length - 1] = clazz.getGenericSuperclass();
 		for (int i = 0; i < genericInterfaces.length && this.generic == null; i++)
 		{
 			Type genericType = genericInterfaces[i];
@@ -68,10 +68,9 @@ public class SearchingType
 			int idx = this.search(type);
 			if (idx > -1)
 			{
-				if (genericType instanceof ParameterizedType)
+				if (genericType instanceof ParameterizedType parameterizedType)
 				{
 					// Current subclass type has generic param
-					ParameterizedType parameterizedType = (ParameterizedType) genericType;
 					// Get generic arg at index
 					Type typeArg = parameterizedType.getActualTypeArguments()[idx];
 					if (typeArg instanceof Class)
@@ -113,5 +112,11 @@ public class SearchingType
 			if (typeParameters[i].getName().equals(genericName)) return i;
 		}
 		return -1;
+	}
+
+	public SearchingType reset()
+	{
+		this.generic = null;
+		return this;
 	}
 }
