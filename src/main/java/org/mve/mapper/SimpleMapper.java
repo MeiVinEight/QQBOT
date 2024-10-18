@@ -138,13 +138,14 @@ public class SimpleMapper<T> extends Mapper<T>
 
 				try (ResultSet rs = stmt.executeQuery())
 				{
-					rs.next();
-
-					Constructor<T> noArg = MagicAccessor.accessor.getConstructor(clazz);
-					if (noArg == null) throw new NullPointerException("No argument constructor not found for " + clazz);
-					ConstructorAccessor<T> ctor = ReflectionFactory.access(noArg);
-					t = ctor.invoke();
-					SimpleMapper.convert(rs, t);
+					if (rs.next())
+					{
+						Constructor<T> noArg = MagicAccessor.accessor.getConstructor(clazz);
+						if (noArg == null) throw new NullPointerException("No argument constructor not found for " + clazz);
+						ConstructorAccessor<T> ctor = ReflectionFactory.access(noArg);
+						t = ctor.invoke();
+						SimpleMapper.convert(rs, t);
+					}
 				}
 			}
 
