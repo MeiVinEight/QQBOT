@@ -3,13 +3,23 @@ package org.mve.acm.pojo.po;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
-@Table(name = "JSESSIONID")
+@Table(name = JSessionID.TABLE_NAME)
 public class JSessionID
 {
-	@Column(name = "GID")
+	public static final String TABLE_NAME = "JSESSIONID";
+	public static final String COLUMN_GID = "GID";
+	public static final String COLUMN_UID = "UID";
+	public static final String COLUMN_JSESSIONID = "JSESSIONID";
+
+	@Column(name = COLUMN_GID)
 	public Long GID;
-	@Column(name = "UID")
+	@Column(name = COLUMN_UID)
 	public long UID;
-	@Column(name = "JSESSIONID")
+	@Column(name = COLUMN_JSESSIONID)
 	public String JSESSIONID;
+
+	public static long getGID(Object session)
+	{
+		return ((JSessionID) session).GID;
+	}
 }
