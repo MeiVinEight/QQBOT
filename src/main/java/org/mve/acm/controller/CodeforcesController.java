@@ -11,7 +11,6 @@ import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.service.ComparatorService;
 import org.mve.service.Service;
 import org.mve.acm.services.codeforces.CodeforcesServiceContest;
-import org.mve.acm.services.codeforces.CodeforcesServiceCookie;
 import org.mve.acm.services.codeforces.CodeforcesServiceHelp;
 import org.mve.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
@@ -37,12 +36,8 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 	private static final Set<Long> GROUPQQ = new HashSet<>();
 	private static final List<Service<GroupMessageEvent>> SERVICES = new ArrayList<>();
 
-	private static final String COMMAND_SYMBOL;
-	private static final String COMMAND_PREFIX;
-	public static final String CMD_HELP_0 = "?";
-	public static final String CMD_HELP_1 = "help";
-	public static final String CMD_CONTEST = "contest";
-	public static final String CMD_COOKIE = "cookie";
+	public static final String COMMAND_SYMBOL;
+	public static final String COMMAND_PREFIX;
 
 	@Override
 	public void accept(GroupMessageEvent event)
@@ -59,7 +54,11 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 				String content = contentList.removeFirst().toString();
 				content = content.substring(COMMAND_SYMBOL.length() + COMMAND_PREFIX.length())
 					.stripLeading();
-				if (content.isEmpty()) content = CMD_HELP_0;
+				if (content.isEmpty())
+				{
+					event.getSubject().sendMessage("?");
+					return;
+				}
 
 
 				for (int i = CodeforcesController.SERVICES.size(); i --> 0;)
@@ -111,10 +110,9 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 		COMMAND_SYMBOL = property.get(PROPERTIES_KEY_CMDSYM).getAsString();
 		COMMAND_PREFIX = property.get(PROPERTIES_KEY_CMDPFX).getAsString();
 
-		SERVICES.add(new CodeforcesServiceHelp(CMD_HELP_0));
-		SERVICES.add(new CodeforcesServiceHelp(CMD_HELP_1));
-		SERVICES.add(new CodeforcesServiceContest(CMD_CONTEST));
-		SERVICES.add(new CodeforcesServiceCookie(CMD_COOKIE));
+		SERVICES.add(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_0));
+		SERVICES.add(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_1));
+		SERVICES.add(new CodeforcesServiceContest(CodeforcesServiceContest.CMD_CONTEST));
 		SERVICES.sort(new ComparatorService<>());
 	}
 }

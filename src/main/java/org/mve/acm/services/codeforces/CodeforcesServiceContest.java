@@ -23,6 +23,7 @@ import java.util.List;
 
 public class CodeforcesServiceContest extends Service<GroupMessageEvent>
 {
+	public static final String CMD_CONTEST = "contest";
 	private static final Gson GSON = new Gson();
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
