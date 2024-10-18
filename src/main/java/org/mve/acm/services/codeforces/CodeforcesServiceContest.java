@@ -27,9 +27,9 @@ public class CodeforcesServiceContest extends Service<GroupMessageEvent>
 	private static final Gson GSON = new Gson();
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-	public CodeforcesServiceContest(String name)
+	public CodeforcesServiceContest()
 	{
-		super(name);
+		super(CodeforcesServiceContest.CMD_CONTEST);
 	}
 
 	@Override
