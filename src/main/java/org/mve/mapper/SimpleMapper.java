@@ -5,7 +5,7 @@ import org.mve.invoke.FieldAccessor;
 import org.mve.invoke.MagicAccessor;
 import org.mve.invoke.ReflectionFactory;
 import org.mve.invoke.common.JavaVM;
-import org.mve.services.ServicesManager;
+import org.mve.service.ServicesManager;
 
 import javax.persistence.Column;
 import javax.persistence.Table;

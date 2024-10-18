@@ -1,4 +1,4 @@
-package org.mve.services;
+package org.mve.service;
 
 import net.mamoe.mirai.event.AbstractEvent;
 import net.mamoe.mirai.message.data.SingleMessage;
