@@ -152,6 +152,56 @@ public class SimpleMapper<T> implements Mapper<T>
 	}
 
 	@Override
+	public List<T> select(Map<String, Object> where, Class<T> clazz)
+	{
+		String tableName = clazz.getSimpleName();
+		Table tableAnno = clazz.getAnnotation(Table.class);
+		if (tableAnno != null) tableName = tableAnno.name();
+		List<T> retVal = new LinkedList<>();
+
+		try (Connection conn = SimpleMapper.connection())
+		{
+			StringBuilder sql = new StringBuilder("SELECT * FROM " + tableName + " WHERE ");
+			Object[] args = new Object[where.size()];
+			int idx = 0;
+			for (String key : where.keySet())
+			{
+				Object value = where.get(key);
+				if (idx > 0) sql.append(" AND ");
+				sql.append(key).append(" = ?");
+				args[idx++] = value;
+			}
+			sql.append(';');
+			ServicesManager.BOT.getLogger().verbose(sql.toString());
+			try (PreparedStatement stmt = conn.prepareStatement(sql.toString()))
+			{
+				for (int i = 0; i < idx; i++)
+				{
+					stmt.setObject(i + 1, args[i]);
+				}
+
+				try (ResultSet rs = stmt.executeQuery())
+				{
+					while (rs.next())
+					{
+						Constructor<T> noArg = MagicAccessor.accessor.getConstructor(clazz);
+						if (noArg == null) throw new NullPointerException("No argument constructor not found for " + clazz);
+						ConstructorAccessor<T> ctor = ReflectionFactory.access(noArg);
+						T t = ctor.invoke();
+						SimpleMapper.convert(rs, t);
+						retVal.add(t);
+					}
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			ServicesManager.BOT.getLogger().error(e);
+		}
+		return retVal;
+	}
+
+	@Override
 	public boolean update(T o)
 	{
 		Class<?> clazz = o.getClass();
