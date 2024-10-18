@@ -1,10 +1,10 @@
 package org.mve.service;
 
-import net.mamoe.mirai.event.AbstractEvent;
+import net.mamoe.mirai.event.Event;
 
 import java.util.Comparator;
 
-public class ComparatorService<T extends AbstractEvent> implements Comparator<Service<T>>
+public class ComparatorService<T extends Event> implements Comparator<Service<T>>
 {
 	@Override
 	public int compare(Service<T> o1, Service<T> o2)
