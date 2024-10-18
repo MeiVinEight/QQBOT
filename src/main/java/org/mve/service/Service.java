@@ -1,12 +1,12 @@
 package org.mve.service;
 
-import net.mamoe.mirai.event.AbstractEvent;
+import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.message.data.SingleMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 
-public abstract class Service<T extends AbstractEvent> implements Comparable<Service<T>>
+public abstract class Service<T extends Event> implements Comparable<Service<T>>
 {
 	public final String name;
 
