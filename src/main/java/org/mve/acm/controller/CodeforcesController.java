@@ -4,27 +4,25 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.message.data.MessageContent;
-import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.service.ComparatorService;
 import org.mve.service.Service;
 import org.mve.acm.services.codeforces.CodeforcesServiceContest;
 import org.mve.acm.services.codeforces.CodeforcesServiceHelp;
-import org.mve.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
+import org.mve.service.ServiceManager;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
-public class CodeforcesController implements Consumer<GroupMessageEvent>
+public class CodeforcesController extends Service<MessageEvent>
 {
 	private static final String CODEFORCES_PROPERTIES_FILENAME = "codeforces.json";
 	private static final String PROPERTIES_KEY_ADMIN = "admin";
@@ -39,41 +37,32 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 	public static final String COMMAND_SYMBOL;
 	public static final String COMMAND_PREFIX;
 
-	@Override
-	public void accept(GroupMessageEvent event)
+	private final ServiceManager service = new ServiceManager();
+
+	public CodeforcesController()
 	{
-		if (CodeforcesController.GROUPQQ.contains(event.getGroup().getId()))
+		super(COMMAND_SYMBOL + COMMAND_PREFIX);
+	}
+
+	@Override
+	public void service(MessageEvent event, List<SingleMessage> contentList)
+	{
+		if (event instanceof GroupMessageEvent groupEvent)
 		{
-			// Filter MessageContent
-			LinkedList<SingleMessage> contentList = event.getMessage()
-				.stream().filter(MessageContent.class::isInstance)
-				.collect(new CollectorArray<>(new LinkedList<>()));
-
-			if (!contentList.isEmpty() && contentList.getFirst().contentToString().startsWith(COMMAND_SYMBOL + COMMAND_PREFIX))
-			{
-				String content = contentList.removeFirst().toString();
-				content = content.substring(COMMAND_SYMBOL.length() + COMMAND_PREFIX.length())
-					.stripLeading();
-				if (content.isEmpty())
-				{
-					event.getSubject().sendMessage("?");
-					return;
-				}
-
-
-				for (int i = CodeforcesController.SERVICES.size(); i --> 0;)
-				{
-					Service<GroupMessageEvent> service = CodeforcesController.SERVICES.get(i);
-					if (content.startsWith(service.name))
-					{
-						content = content.substring(service.name.length())
-							.stripLeading();
-						if (!content.isEmpty()) contentList.addFirst(new PlainText(content));
-						service.service(event, contentList);
-					}
-				}
-			}
+			if (!CodeforcesController.GROUPQQ.contains(groupEvent.getGroup().getId())) return;
 		}
+		if (contentList.isEmpty())
+		{
+			event.getSubject().sendMessage("?");
+			return;
+		}
+		Service<Event> service = this.service.service(event.getClass(), contentList.get(0).toString());
+		if (service == null)
+		{
+			event.getSubject().sendMessage("?");
+			return;
+		}
+		service.subject(event, contentList);
 	}
 
 	static
@@ -112,7 +101,7 @@ public class CodeforcesController implements Consumer<GroupMessageEvent>
 
 		SERVICES.add(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_0));
 		SERVICES.add(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_1));
-		SERVICES.add(new CodeforcesServiceContest(CodeforcesServiceContest.CMD_CONTEST));
+		SERVICES.add(new CodeforcesServiceContest());
 		SERVICES.sort(new ComparatorService<>());
 	}
 }

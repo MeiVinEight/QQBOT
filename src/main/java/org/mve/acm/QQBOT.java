@@ -1,18 +1,20 @@
-package org.mve.service;
+package org.mve.acm;
 
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.event.Event;
-import org.mve.type.SearchingType;
+import net.mamoe.mirai.event.events.MessageEvent;
+import org.mve.acm.controller.CodeforcesController;
 import org.mve.invoke.common.JavaVM;
+import org.mve.service.ServiceManager;
+import org.mve.sql.Database;
 import top.mrxiaom.overflow.BotBuilder;
 
 import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public class ServicesManager
+public class QQBOT implements Consumer<MessageEvent>
 {
-	private static final String PROPERTIES_FILENAME = "services.properties";
+	private static final String PROPERTIES_FILENAME = "bot.properties";
 	private static final String PROPERTY_KEY_FORWARD_WEBSOCKET_HOST = "forward.websocket.host";
 	private static final String PROPERTY_KEY_FORWARD_WEBSOCKET_TOKEN = "forward.websocket.token";
 	private static final String PROPERTY_KEY_REVERSE_WEBSOCKET_PORT = "reverse.websocket.port";
@@ -20,20 +22,25 @@ public class ServicesManager
 	private static final String PROPERTY_KEY_MYSQL_URL = "mysql.url";
 	private static final String PROPERTY_KEY_MYSQL_USERNAME = "mysql.username";
 	private static final String PROPERTY_KEY_MYSQL_PASSWORD = "mysql.password";
-
 	private static final String DEFAULT_MYSQL_URL = "jdbc:mysql://127.0.0.1:3306/";
-	private static final Properties PROPERTIES = new Properties();
+
+	public static final Properties PROPERTIES = new Properties();
 	public static final String MYSQL_URL;
 	public static final String MYSQL_USERNAME;
 	public static final String MYSQL_PASSWORD;
+	public static final Database DATABASE;
 	public static final Bot BOT;
 
-	public static <E extends Event, Y extends Consumer<E>> void service(Y consumer)
+	private final ServiceManager service = new ServiceManager();
+
+	public QQBOT()
 	{
-		SearchingType searching = new SearchingType(Consumer.class, 0);
-		searching.search(consumer.getClass());
-		Class<E> clazz = (Class<E>) searching.generic;
-		ServicesManager.BOT.getEventChannel().subscribeAlways(clazz, consumer);
+		this.service.service(new CodeforcesController());
+	}
+
+	@Override
+	public void accept(MessageEvent messageEvent)
+	{
 	}
 
 	static
@@ -78,6 +85,7 @@ public class ServicesManager
 		{
 			throw new NullPointerException("Service not found");
 		}
+		Runtime.getRuntime().addShutdownHook(new Thread(QQBOT.BOT::close));
 
 		// Get mysql properties
 		String mysqlUrl = DEFAULT_MYSQL_URL;
@@ -91,6 +99,7 @@ public class ServicesManager
 		}
 		MYSQL_USERNAME = mysqlUsername;
 		MYSQL_PASSWORD = mysqlPassword;
+		DATABASE = new Database(MYSQL_URL, MYSQL_USERNAME, MYSQL_PASSWORD);
 		try
 		{
 			// TODO Use property
@@ -100,7 +109,5 @@ public class ServicesManager
 		{
 			BOT.getLogger().error(e);
 		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread(ServicesManager.BOT::close));
 	}
 }

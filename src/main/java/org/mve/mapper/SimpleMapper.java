@@ -1,11 +1,12 @@
 package org.mve.mapper;
 
+import org.mve.acm.QQBOT;
 import org.mve.invoke.ConstructorAccessor;
 import org.mve.invoke.FieldAccessor;
 import org.mve.invoke.MagicAccessor;
 import org.mve.invoke.ReflectionFactory;
 import org.mve.invoke.common.JavaVM;
-import org.mve.service.ServicesManager;
+import org.mve.sql.Database;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -13,7 +14,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,8 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SimpleMapper<T> implements Mapper<T>
+public class SimpleMapper<T> extends Mapper<T>
 {
+	public SimpleMapper(Database database)
+	{
+		super(database);
+	}
+
 	@Override
 	public boolean insert(T o)
 	{
@@ -35,7 +40,7 @@ public class SimpleMapper<T> implements Mapper<T>
 		Table tableAnno = clazz.getAnnotation(Table.class);
 		if (tableAnno != null) tableName = tableAnno.name();
 
-		try (Connection conn = SimpleMapper.connection())
+		try (Connection conn = this.connection())
 		{
 			StringBuilder sql = new StringBuilder("INSERT INTO ").append(tableName).append(' ');
 			StringBuilder columnBuilder = new StringBuilder("(");
@@ -60,7 +65,7 @@ public class SimpleMapper<T> implements Mapper<T>
 			columnBuilder.append(')');
 			valuesBuilder.append(')');
 			sql.append(columnBuilder).append(" VALUES ").append(valuesBuilder).append(';');
-			ServicesManager.BOT.getLogger().verbose(sql.toString());
+			QQBOT.BOT.getLogger().verbose(sql.toString());
 
 			try (PreparedStatement stmt = conn.prepareStatement(sql.toString()))
 			{
@@ -76,7 +81,7 @@ public class SimpleMapper<T> implements Mapper<T>
 		}
 		catch (SQLException t)
 		{
-			ServicesManager.BOT.getLogger().error(t);
+			QQBOT.BOT.getLogger().error(t);
 		}
 		return false;
 	}
@@ -92,9 +97,9 @@ public class SimpleMapper<T> implements Mapper<T>
 			tableName = tableAnno.name();
 		}
 		T t = null;
-		try (Connection conn = SimpleMapper.connection())
+		try (Connection conn = this.connection())
 		{
-			Set<String> primKeys = SimpleMapper.primaryKey(tableName);
+			Set<String> primKeys = this.primaryKey(tableName);
 
 			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
 				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
@@ -120,7 +125,7 @@ public class SimpleMapper<T> implements Mapper<T>
 				}
 			}
 			sql.append(';');
-			ServicesManager.BOT.getLogger().verbose(sql.toString());
+			QQBOT.BOT.getLogger().verbose(sql.toString());
 
 			try (PreparedStatement stmt = conn.prepareStatement(sql.toString()))
 			{
@@ -146,7 +151,7 @@ public class SimpleMapper<T> implements Mapper<T>
 		}
 		catch (Throwable exce)
 		{
-			ServicesManager.BOT.getLogger().error(exce);
+			QQBOT.BOT.getLogger().error(exce);
 		}
 		return t;
 	}
@@ -159,7 +164,7 @@ public class SimpleMapper<T> implements Mapper<T>
 		if (tableAnno != null) tableName = tableAnno.name();
 		List<T> retVal = new LinkedList<>();
 
-		try (Connection conn = SimpleMapper.connection())
+		try (Connection conn = this.connection())
 		{
 			StringBuilder sql = new StringBuilder("SELECT * FROM " + tableName + " WHERE ");
 			Object[] args = new Object[where.size()];
@@ -172,7 +177,7 @@ public class SimpleMapper<T> implements Mapper<T>
 				args[idx++] = value;
 			}
 			sql.append(';');
-			ServicesManager.BOT.getLogger().verbose(sql.toString());
+			QQBOT.BOT.getLogger().verbose(sql.toString());
 			try (PreparedStatement stmt = conn.prepareStatement(sql.toString()))
 			{
 				for (int i = 0; i < idx; i++)
@@ -196,7 +201,7 @@ public class SimpleMapper<T> implements Mapper<T>
 		}
 		catch (SQLException e)
 		{
-			ServicesManager.BOT.getLogger().error(e);
+			QQBOT.BOT.getLogger().error(e);
 		}
 		return retVal;
 	}
@@ -211,12 +216,12 @@ public class SimpleMapper<T> implements Mapper<T>
 		{
 			tableName = tableAnno.name();
 		}
-		try (Connection conn = SimpleMapper.connection())
+		try (Connection conn = this.connection())
 		{
 			StringBuilder sql = new StringBuilder("UPDATE ").append(tableName).append(" SET ");
 			StringBuilder where = new StringBuilder(" WHERE ");
 
-			Set<String> primKeys = SimpleMapper.primaryKey(tableName);
+			Set<String> primKeys = this.primaryKey(tableName);
 			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
 				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
 				.toArray(Field[]::new);
@@ -242,7 +247,7 @@ public class SimpleMapper<T> implements Mapper<T>
 			}
 
 			sql.append(where).append(';');
-			ServicesManager.BOT.getLogger().verbose(sql.toString());
+			QQBOT.BOT.getLogger().verbose(sql.toString());
 			try (PreparedStatement stmt = conn.prepareStatement(sql.toString()))
 			{
 				int idxs = 0;
@@ -269,7 +274,7 @@ public class SimpleMapper<T> implements Mapper<T>
 		}
 		catch (SQLException e)
 		{
-			ServicesManager.BOT.getLogger().error(e);
+			QQBOT.BOT.getLogger().error(e);
 		}
 		return false;
 	}
@@ -284,10 +289,10 @@ public class SimpleMapper<T> implements Mapper<T>
 		{
 			tableName = tableAnno.name();
 		}
-		try (Connection conn = SimpleMapper.connection())
+		try (Connection conn = this.connection())
 		{
 			StringBuilder sql = new StringBuilder("DELETE FROM ").append(tableName).append(" WHERE ");
-			Set<String> primKeys = SimpleMapper.primaryKey(tableName);
+			Set<String> primKeys = this.primaryKey(tableName);
 			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
 				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
 				.toArray(Field[]::new);
@@ -307,7 +312,7 @@ public class SimpleMapper<T> implements Mapper<T>
 			}
 
 			sql.append(';');
-			ServicesManager.BOT.getLogger().verbose(sql.toString());
+			QQBOT.BOT.getLogger().verbose(sql.toString());
 			try (PreparedStatement stmt = conn.prepareStatement(sql.toString()))
 			{
 				for (int i = 0; i < args.size(); i++)
@@ -320,20 +325,15 @@ public class SimpleMapper<T> implements Mapper<T>
 		}
 		catch (SQLException e)
 		{
-			ServicesManager.BOT.getLogger().error(e);
+			QQBOT.BOT.getLogger().error(e);
 		}
 		return false;
 	}
 
-	public static Connection connection() throws SQLException
-	{
-		return DriverManager.getConnection(ServicesManager.MYSQL_URL, ServicesManager.MYSQL_USERNAME, ServicesManager.MYSQL_PASSWORD);
-	}
-
-	public static Set<String> primaryKey(String tableName)
+	public Set<String> primaryKey(String tableName)
 	{
 		Set<String> primKeys = new HashSet<>();
-		try (Connection conn = SimpleMapper.connection())
+		try (Connection conn = this.connection())
 		{
 			try (ResultSet primKeyRS = conn.getMetaData().getPrimaryKeys(null, null, tableName))
 			{
