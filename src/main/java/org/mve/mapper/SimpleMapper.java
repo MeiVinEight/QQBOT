@@ -11,15 +11,18 @@ import javax.persistence.Column;
 import javax.persistence.Table;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SimpleMapper<T> implements Mapper<T>
@@ -37,7 +40,9 @@ public class SimpleMapper<T> implements Mapper<T>
 			StringBuilder sql = new StringBuilder("INSERT INTO ").append(tableName).append(' ');
 			StringBuilder columnBuilder = new StringBuilder("(");
 			StringBuilder valuesBuilder = new StringBuilder("(");
-			Field[] fields = MagicAccessor.accessor.getFields(clazz);
+			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
+				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
+				.toArray(Field[]::new);
 			for (int i = 0; i < fields.length; i++)
 			{
 				Field field = fields[i];
@@ -91,7 +96,9 @@ public class SimpleMapper<T> implements Mapper<T>
 		{
 			Set<String> primKeys = SimpleMapper.primaryKey(tableName);
 
-			Field[] fields = MagicAccessor.accessor.getFields(clazz);
+			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
+				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
+				.toArray(Field[]::new);
 			List<FieldAccessor<?>> primaryKeys = new LinkedList<>();
 			StringBuilder sql = new StringBuilder("SELECT * FROM " + tableName + " WHERE ");
 
@@ -160,7 +167,9 @@ public class SimpleMapper<T> implements Mapper<T>
 			StringBuilder where = new StringBuilder(" WHERE ");
 
 			Set<String> primKeys = SimpleMapper.primaryKey(tableName);
-			Field[] fields = MagicAccessor.accessor.getFields(clazz);
+			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
+				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
+				.toArray(Field[]::new);
 			int setCount = 0;
 			int whereCount = 0;
 			for (Field field : fields)
@@ -229,7 +238,9 @@ public class SimpleMapper<T> implements Mapper<T>
 		{
 			StringBuilder sql = new StringBuilder("DELETE FROM ").append(tableName).append(" WHERE ");
 			Set<String> primKeys = SimpleMapper.primaryKey(tableName);
-			Field[] fields = MagicAccessor.accessor.getFields(clazz);
+			Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(clazz))
+				.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
+				.toArray(Field[]::new);
 			List<Object> args = new ArrayList<>(primKeys.size());
 			for (Field field : fields)
 			{
@@ -291,7 +302,9 @@ public class SimpleMapper<T> implements Mapper<T>
 
 	public static <T> void convert(ResultSet rs, T o) throws SQLException
 	{
-		Field[] fields = MagicAccessor.accessor.getFields(o.getClass());
+		Field[] fields = Arrays.stream(MagicAccessor.accessor.getFields(o.getClass()))
+			.filter(x -> (x.getModifiers() & Modifier.STATIC) == 0)
+			.toArray(Field[]::new);
 		for (Field field : fields)
 		{
 			FieldAccessor<?> facc = ReflectionFactory.access(field);
