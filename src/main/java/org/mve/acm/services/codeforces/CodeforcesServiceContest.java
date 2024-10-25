@@ -33,7 +33,7 @@ public class CodeforcesServiceContest extends Service<GroupMessageEvent>
 	}
 
 	@Override
-	public void service(GroupMessageEvent event, List<SingleMessage> contentList)
+	public void service(GroupMessageEvent event, LinkedList<SingleMessage> contentList)
 	{
 		try
 		{

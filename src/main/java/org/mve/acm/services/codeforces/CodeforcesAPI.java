@@ -11,5 +11,6 @@ public class CodeforcesAPI
 	public static final String KEY_COMMENT = "comment";
 	public static final String KEY_RESULT = "result";
 
+	public static final String CODEFORCES_HOST = "codeforces.com";
 	public static final String API_PROBLEMSET_SUBMIT = "https://codeforces.com/problemset/submit";
 }

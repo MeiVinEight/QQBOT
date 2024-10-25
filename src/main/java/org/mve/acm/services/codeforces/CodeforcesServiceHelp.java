@@ -4,7 +4,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.service.Service;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public class CodeforcesServiceHelp extends Service<GroupMessageEvent>
 {
@@ -17,7 +17,7 @@ public class CodeforcesServiceHelp extends Service<GroupMessageEvent>
 	}
 
 	@Override
-	public void service(GroupMessageEvent event, List<SingleMessage> contentList)
+	public void service(GroupMessageEvent event, LinkedList<SingleMessage> contentList)
 	{
 		// TODO HELP
 		event.getSubject().sendMessage(CodeforcesServiceHelp.CMD_HELP_0);

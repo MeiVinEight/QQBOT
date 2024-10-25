@@ -5,7 +5,7 @@ import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.SingleMessage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.LinkedList;
 
 public abstract class Service<T extends Event> implements Comparable<Service<T>>
 {
@@ -16,7 +16,7 @@ public abstract class Service<T extends Event> implements Comparable<Service<T>>
 		this.name = name;
 	}
 
-	public abstract void service(T event, List<SingleMessage> contentList);
+	public abstract void service(T event, LinkedList<SingleMessage> contentList);
 
 	@Override
 	public int compareTo(@NotNull Service<T> o)
@@ -24,7 +24,7 @@ public abstract class Service<T extends Event> implements Comparable<Service<T>>
 		return this.name.compareTo(o.name);
 	}
 
-	public void subject(T event, List<SingleMessage> contentList)
+	public void subject(T event, LinkedList<SingleMessage> contentList)
 	{
 		if (!this.name.isEmpty())
 		{

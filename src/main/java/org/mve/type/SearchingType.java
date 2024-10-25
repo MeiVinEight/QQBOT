@@ -68,8 +68,9 @@ public class SearchingType
 			int idx = this.search(type);
 			if (idx > -1)
 			{
-				if (genericType instanceof ParameterizedType parameterizedType)
+				if (genericType instanceof ParameterizedType)
 				{
+					ParameterizedType parameterizedType = (ParameterizedType) genericType;
 					// Current subclass type has generic param
 					// Get generic arg at index
 					Type typeArg = parameterizedType.getActualTypeArguments()[idx];

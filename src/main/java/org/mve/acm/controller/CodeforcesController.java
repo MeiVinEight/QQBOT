@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class CodeforcesController extends Service<MessageEvent>
 	private static final String PROPERTIES_KEY_CMDSYM = "cmdsym";
 	private static final String PROPERTIES_KEY_CMDPFX = "cmdpfx";
 
-	private static final Set<Long> ADMINQQ = new HashSet<>();
+	public static final Set<Long> ADMINQQ = new HashSet<>();
 	private static final Set<Long> GROUPQQ = new HashSet<>();
 	private static final List<Service<GroupMessageEvent>> SERVICES = new ArrayList<>();
 
@@ -50,10 +51,11 @@ public class CodeforcesController extends Service<MessageEvent>
 	}
 
 	@Override
-	public void service(MessageEvent event, List<SingleMessage> contentList)
+	public void service(MessageEvent event, LinkedList<SingleMessage> contentList)
 	{
-		if (event instanceof GroupMessageEvent groupEvent)
+		if (event instanceof GroupMessageEvent)
 		{
+			GroupMessageEvent groupEvent = (GroupMessageEvent) event;
 			if (!CodeforcesController.GROUPQQ.contains(groupEvent.getGroup().getId())) return;
 		}
 		if (contentList.isEmpty())
