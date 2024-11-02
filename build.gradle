@@ -29,9 +29,13 @@ dependencies {
 
 	implementation("top.mrxiaom.mirai:overflow-core:1.0.0")
 	implementation("net.mamoe:mirai-core-api:2.16.0")
+	// 可以简单地只添加 api("net.mamoe:mirai-core:2.6.1")
 	implementation 'com.github.MeiVinEight:ReflectionFX:-SNAPSHOT'
 	implementation 'com.google.code.gson:gson:2.11.0'
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '9.1.0'
-
-	// 可以简单地只添加 api("net.mamoe:mirai-core:2.6.1")
+	// https://mvnrepository.com/artifact/org.scilab.forge/jlatexmath
+	implementation group: 'org.scilab.forge', name: 'jlatexmath', version: '1.0.7'
+	// https://mvnrepository.com/artifact/com.google.guava/guava
+	// implementation group: 'com.google.guava', name: 'guava', version: '33.2.1-jre', artifacts: ''
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.26.0'
 }

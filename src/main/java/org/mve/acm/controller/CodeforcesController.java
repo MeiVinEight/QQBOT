@@ -8,6 +8,7 @@ import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.SingleMessage;
+import org.mve.acm.services.codeforces.CodeforcesScreenshotProblemService;
 import org.mve.acm.services.codeforces.CodeforcesServiceSession;
 import org.mve.service.ComparatorService;
 import org.mve.service.Service;
@@ -48,6 +49,7 @@ public class CodeforcesController extends Service<MessageEvent>
 		this.service.service(new CodeforcesServiceHelp(CodeforcesServiceHelp.CMD_HELP_1));
 		this.service.service(new CodeforcesServiceContest());
 		this.service.service(new CodeforcesServiceSession());
+		this.service.service(new CodeforcesScreenshotProblemService());
 	}
 
 	@Override

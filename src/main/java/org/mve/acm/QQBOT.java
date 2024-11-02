@@ -6,6 +6,7 @@ import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.MessageContent;
 import net.mamoe.mirai.message.data.SingleMessage;
 import org.mve.acm.controller.CodeforcesController;
+import org.mve.acm.services.latex.JLatexMathService;
 import org.mve.collect.CollectorArray;
 import org.mve.invoke.common.JavaVM;
 import org.mve.service.Service;
@@ -43,6 +44,7 @@ public class QQBOT implements Consumer<MessageEvent>
 	{
 		QQBOT.BOT.getEventChannel().subscribeAlways(MessageEvent.class, this);
 		this.service.service(new CodeforcesController());
+		this.service.service(new JLatexMathService());
 	}
 
 	@Override
