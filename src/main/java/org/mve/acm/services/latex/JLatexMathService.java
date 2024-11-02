@@ -24,7 +24,6 @@ public class JLatexMathService extends Service<MessageEvent>
 {
 	public static final String SERVICE = "/latex";
 	public static final File LATEX_PNG_FOLDER = new File("latex");
-	public static final	char[] HEX_DIGITS = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 
 	public JLatexMathService()
 	{
